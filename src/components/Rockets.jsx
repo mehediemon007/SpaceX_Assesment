@@ -14,9 +14,9 @@ const Rockets = () => {
 
     return (
         <>
-            {rockets.map(rocket =>(
+            {rockets.length ? (rockets.map(rocket =>(
                 <h1>{rocket.rocket.rocket_name}</h1>
-            ))}
+            ))): <h1>Data Loading</h1>}
         </>
     )
 }
