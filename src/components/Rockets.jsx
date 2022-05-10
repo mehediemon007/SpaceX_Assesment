@@ -1,17 +1,25 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRockets } from '../features/rocketSlice';
 import {Link} from 'react-router-dom'
 
 const Rockets = () => {
 
-    const {rockets} = useSelector(state => state.rocket);
+    const searchInput = useRef(null)
+
+    const [searchTerm, setSearchTerm] = useState("");
+
+    let {rockets} = useSelector(state => state.rocket);
     
     const dispatch = useDispatch();
 
+    const handleSearch = (e)=>{
+        setSearchTerm(e.target.value);
+    }
+
     useEffect(() => {
         dispatch(fetchRockets())
-    })
+    },[])
 
     return (
         <>
@@ -25,8 +33,8 @@ const Rockets = () => {
                             <div className="row">
                                 <div className="col-4">
                                     <div className="input-group mb-3">
-                                        <input type="text" className="form-control" placeholder="Search Rocket" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-                                        <button className="btn btn-primary" type="button" id="button-addon2">Search</button>
+                                        <input type="text" className="form-control" placeholder="Search Rocket" aria-label="Recipient's username" aria-describedby="button-addon2" ref={searchInput} onChange={(e)=>handleSearch(e)}/>
+                                        <button className="btn btn-primary" type="button" id="button-addon2" onClick={()=> setSearchTerm(searchInput.current.value)}>Search</button>
                                     </div>
                                 </div>
                                 <div className="offset-5 col-3">
@@ -44,14 +52,24 @@ const Rockets = () => {
                         </div>
                         <div className="row">
                             {
-                                rockets.length ? (rockets.map((rocket,index)=>{
+                                rockets.length ? (rockets.filter( rocket => {
+                                    const {rocket:{rocket_name}} = rocket;
+                                    if(searchTerm === ''){
+                                        return rocket
+                                    }else if(rocket_name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                        return rocket
+                                    }
+                                }).map((rocket,index)=>{
                                     const {rocket:{rocket_name}, mission_name, details} = rocket;
                                     return(
                                         <div className="col-4 mb-4" key={index}>
                                             <div className="card rocket-card">
                                                 <img src={rocket.links.mission_patch_small} className="card-img-top p-3" alt={rocket_name}/>
                                                 <div className="card-body">
-                                                    <h5 className="card-title">{mission_name}</h5>
+                                                    <div>
+                                                        <h5 className="card-title">Mission: <b className='text-primary d-inline'>{mission_name}</b></h5>
+                                                        <h5 className="card-title">Rocket: <b className='text-success d-inline'>{rocket_name}</b></h5>
+                                                    </div>
                                                     <p className="card-text">{details}</p>
                                                     <Link to={`/mission-details/${mission_name}`} className="btn btn-primary">Mission Details</Link>
                                                 </div>
