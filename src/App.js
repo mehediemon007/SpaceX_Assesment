@@ -1,5 +1,5 @@
 import Rockets from "./components/Rockets";
-import RocketsCls from "./components/RocketsCls";
+// import RocketsCls from "./components/RocketsCls";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import MissionDetails from "./components/MissionDetails";
 
@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route exact path="/" element={<RocketsCls/>}/>
+          <Route exact path="/" element={<Rockets/>}/>
           <Route exact path="/mission-details/:mission_name" element={<MissionDetails/>}/>
         </Routes>
       </Router>

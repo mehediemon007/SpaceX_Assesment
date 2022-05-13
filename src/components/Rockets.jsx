@@ -9,7 +9,9 @@ const Rockets = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
 
-    let {rockets} = useSelector(state => state.rocket);
+    let {rockets: rocketList} = useSelector(state => state.rocket);
+
+    const [rockets, setRockets] = useState(rocketList);
     
     const dispatch = useDispatch();
 
@@ -18,8 +20,12 @@ const Rockets = () => {
     }
 
     useEffect(() => {
-        dispatch(fetchRockets())
-    },[])
+        if(rocketList.length === 0){
+            dispatch(fetchRockets());
+        }else{
+            setRockets(rocketList)
+        }
+    },[dispatch,rocketList])
 
     return (
         <>
